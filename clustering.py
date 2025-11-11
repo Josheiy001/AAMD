@@ -1,6 +1,6 @@
 # cluster_ucimlrepo_heart.py
 # Uses ucimlrepo to fetch UCI Heart Disease, builds mixed-feature clustering,
-# selects K by silhouette, makes figures, and exports tidy outputs.
+# selects K by silhouette.
 
 import numpy as np
 import pandas as pd
@@ -14,9 +14,10 @@ from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
+from sklearn.metrics import silhouette_score, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, RocCurveDisplay, ConfusionMatrixDisplay, classification_report
 from sklearn.decomposition import PCA
-
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
 # 1) Load UCI Heart Disease via ucimlrepo
 heart = fetch_ucirepo(name="Heart Disease")
 
@@ -130,7 +131,7 @@ for c in sorted(df["cluster"].unique()):
     plt.scatter(df.loc[mask,"PC1"], df.loc[mask,"PC2"], s=26, alpha=0.85, label=f"Cluster {c}")
 plt.xlabel("PC1")
 plt.ylabel("PC2")
-plt.title(f"PCA(2D) of processed features (k={best_k})")
+plt.title(f"PCA(2D) of features (k={best_k})")
 plt.legend(frameon=False)
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
